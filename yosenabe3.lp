@@ -1,93 +1,79 @@
 % Question 3
 
-% -------------------------------------------------
-% POSSIBLE MOVES
-% -------------------------------------------------
+% ------------------------------------
+% POSSIBLE TARGETS
+% ------------------------------------
 
-% vertical moves
-possible(X,Y,X,YY) :-
-    number(X,Y,_),
-    area(X,YY,_),
-    Y != YY.
-
-% horizontal moves
 possible(X,Y,XX,Y) :-
     number(X,Y,_),
     area(XX,Y,_),
-    X != XX.
+    XX != X.
 
-% -------------------------------------------------
-% EXACTLY ONE TARGET
-% -------------------------------------------------
+possible(X,Y,X,YY) :-
+    number(X,Y,_),
+    area(X,YY,_),
+    YY != Y.
+
+% ------------------------------------
+% CHOOSE EXACTLY ONE TARGET
+% ------------------------------------
 
 1 {
     target(X,Y,XX,YY) : possible(X,Y,XX,YY)
 } 1 :-
     number(X,Y,_).
 
-% -------------------------------------------------
-% EVERY AREA MUST BE USED
-% -------------------------------------------------
+% ------------------------------------
+% EVERY AREA USED
+% ------------------------------------
 
 used(A) :-
-    target(_,_,XX,YY),
-    area(XX,YY,A).
+    target(_,_,X,Y),
+    area(X,Y,A).
 
 :- area(_,_,A),
    not used(A).
 
-% -------------------------------------------------
+% ------------------------------------
 % PATH CELLS
 % destination INCLUDED
-% -------------------------------------------------
-
-% vertical up
-path(X,Y,X,Y2) :-
-    target(X,Y,X,YY),
-    YY > Y,
-    cell(X,Y2),
-    Y < Y2,
-    Y2 <= YY.
-
-% vertical down
-path(X,Y,X,Y2) :-
-    target(X,Y,X,YY),
-    YY < Y,
-    cell(X,Y2),
-    YY <= Y2,
-    Y2 < Y.
+% source EXCLUDED
+% ------------------------------------
 
 % horizontal right
 path(X,Y,X2,Y) :-
     target(X,Y,XX,Y),
-    XX > X,
-    cell(X2,Y),
-    X < X2,
-    X2 <= XX.
+    X <= X2,
+    X2 <= XX,
+    cell(X2,Y).
 
 % horizontal left
 path(X,Y,X2,Y) :-
     target(X,Y,XX,Y),
-    XX < X,
-    cell(X2,Y),
     XX <= X2,
-    X2 < X.
+    X2 <= X,
+    cell(X2,Y).
 
-% -------------------------------------------------
-% DIFFERENT SOURCE NUMBERS
-% -------------------------------------------------
+% vertical down
+path(X,Y,X,Y2) :-
+    target(X,Y,X,YY),
+    Y <= Y2,
+    Y2 <= YY,
+    cell(X,Y2).
 
-different(X1,Y1,X2,Y2) :-
-    number(X1,Y1,_),
-    number(X2,Y2,_),
-    (X1,Y1) != (X2,Y2).
+% vertical up
+path(X,Y,X,Y2) :-
+    target(X,Y,X,YY),
+    YY <= Y2,
+    Y2 <= Y,
+    cell(X,Y2).
 
-% -------------------------------------------------
-% PATHS CANNOT SHARE CELLS
-% -------------------------------------------------
+% ------------------------------------
+% PATHS CANNOT OVERLAP
+% ------------------------------------
 
 :- path(X1,Y1,X,Y),
    path(X2,Y2,X,Y),
-   different(X1,Y1,X2,Y2).
+   (X1,Y1) != (X2,Y2).
 
 #show target/4.
