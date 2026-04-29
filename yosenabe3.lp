@@ -17,7 +17,7 @@ possible(X,Y,XX,Y) :-
     X != XX.
 
 % -------------------------------------------------
-% EXACTLY ONE TARGET PER NUMBER
+% EXACTLY ONE TARGET
 % -------------------------------------------------
 
 1 {
@@ -46,7 +46,7 @@ path(X,Y,X,Y2) :-
     target(X,Y,X,YY),
     YY > Y,
     cell(X,Y2),
-    Y2 > Y,
+    Y < Y2,
     Y2 <= YY.
 
 % vertical down
@@ -54,15 +54,15 @@ path(X,Y,X,Y2) :-
     target(X,Y,X,YY),
     YY < Y,
     cell(X,Y2),
-    Y2 < Y,
-    Y2 >= YY.
+    YY <= Y2,
+    Y2 < Y.
 
 % horizontal right
 path(X,Y,X2,Y) :-
     target(X,Y,XX,Y),
     XX > X,
     cell(X2,Y),
-    X2 > X,
+    X < X2,
     X2 <= XX.
 
 % horizontal left
@@ -70,8 +70,8 @@ path(X,Y,X2,Y) :-
     target(X,Y,XX,Y),
     XX < X,
     cell(X2,Y),
-    X2 < X,
-    X2 >= XX.
+    XX <= X2,
+    X2 < X.
 
 % -------------------------------------------------
 % DIFFERENT SOURCE NUMBERS
@@ -80,12 +80,7 @@ path(X,Y,X2,Y) :-
 different(X1,Y1,X2,Y2) :-
     number(X1,Y1,_),
     number(X2,Y2,_),
-    X1 != X2.
-
-different(X1,Y1,X2,Y2) :-
-    number(X1,Y1,_),
-    number(X2,Y2,_),
-    Y1 != Y2.
+    (X1,Y1) != (X2,Y2).
 
 % -------------------------------------------------
 % PATHS CANNOT SHARE CELLS
