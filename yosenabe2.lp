@@ -1,4 +1,4 @@
-% Question 1
+% Question 2
 % Move each number in a straight horizontal or vertical line
 % into a gray area.
 
